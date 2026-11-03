@@ -123,6 +123,16 @@ function log(level, message) {
 
 function corsHeadersFor(req) {
   const origin = req.headers.origin;
+  // "null" arrives from opaque contexts (about:blank / sandboxed iframes)
+  if (origin === "null") {
+    return {
+      "Access-Control-Allow-Origin": "null",
+      "Vary": "Origin",
+      "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+      "Access-Control-Allow-Headers": "*",
+      "Access-Control-Max-Age": "86400",
+    };
+  }
   if (ALLOWED_ORIGINS.includes("*")) {
     return {
       "Access-Control-Allow-Origin": "*",
@@ -223,6 +233,7 @@ const server = http.createServer((req, res) => {
     if (req.method === "GET" || req.method === "HEAD") {
       // Health check — used by the TaskFlow frontend and Render.
       if (pathname === "/health") {
+        log("info", `health check from origin: ${req.headers.origin || "(none)"}`);
         return sendJSON(res, 200, {
           ok: true,
           service: "taskflow-relay-backend",
