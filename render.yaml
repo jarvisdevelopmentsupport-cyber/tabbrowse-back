@@ -1,0 +1,26 @@
+# TaskFlow Relay backend — Render deployment configuration
+# Deploy: push this directory to GitHub, then create a new Web Service on
+# Render from that repository (Render auto-detects this render.yaml), or
+# configure the same values manually in the Render dashboard.
+
+services:
+  - type: web
+    name: taskflow-relay-backend
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Comma-separated list of origins allowed to load the Scramjet
+      # bundles via CORS. Use "*" to allow any origin, or lock it down:
+      # value: "https://your-app.wasmer.app"
+      - key: ALLOWED_ORIGINS
+        sync: false
+      # Optional: set to "0" to disable per-request logging
+      - key: REQUEST_LOG
+        value: "1"

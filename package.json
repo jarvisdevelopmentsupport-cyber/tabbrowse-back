@@ -1,0 +1,21 @@
+{
+  "name": "taskflow-relay-backend",
+  "version": "1.0.0",
+  "description": "Custom TaskFlow Relay backend: serves the official Scramjet static bundles, runs the Wisp WebSocket transport, and exposes a health endpoint. Designed for the Render free tier.",
+  "type": "module",
+  "private": true,
+  "main": "server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "healthcheck": "node -e \"fetch(process.env.BACKEND_URL || 'http://localhost:8080/health').then(r => r.json()).then(j => { console.log(j); process.exit(j.ok ? 0 : 1); }).catch(() => process.exit(1))\""
+  },
+  "dependencies": {
+    "@mercuryworkshop/scramjet": "2.0.67-alpha.2",
+    "@mercuryworkshop/scramjet-controller": "0.0.14",
+    "@mercuryworkshop/libcurl-transport": "2.0.6",
+    "@mercuryworkshop/wisp-js": "^0.5.2"
+  }
+}
